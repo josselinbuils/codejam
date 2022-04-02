@@ -38,32 +38,26 @@ readInput();
 
 function solveProblem(problem) {
   problem.testCases.forEach(([moduleCount, funFactors, chains], index) => {
-    const initiators = [];
-    let res = 0;
-
-    for (let i = 1; i <= moduleCount; i++) {
-      if (!chains.includes(i)) {
-        initiators.push(i);
-      }
-    }
-
     const initiatorsWithCommonModules = [];
     let baseRes = 0;
+    let res = 0;
 
-    for (const initiator of initiators) {
-      let module = initiator;
-      let funFactor = 0;
+    for (let m = 1; m <= moduleCount; m++) {
+      if (!chains.includes(m)) {
+        let module = m;
+        let funFactor = 0;
 
-      while (module > 0) {
-        if (chains.filter((m) => m === module).length > 1) {
-          initiatorsWithCommonModules.push(initiator);
-          funFactor = 0;
-          break;
+        while (module > 0) {
+          if (chains.filter((m) => m === module).length > 1) {
+            initiatorsWithCommonModules.push(m);
+            funFactor = 0;
+            break;
+          }
+          funFactor = Math.max(funFactor, funFactors[module - 1]);
+          module = chains[module - 1];
         }
-        funFactor = Math.max(funFactor, funFactors[module - 1]);
-        module = chains[module - 1];
+        baseRes += funFactor;
       }
-      baseRes += funFactor;
     }
 
     const initiatorCombinations = getCombinations(
